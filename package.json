@@ -16,10 +16,6 @@
   "devDependencies": {
     "concurrently": "^8.2.2"
   },
-  "workspaces": [
-    "frontend",
-    "backend"
-  ],
   "dependencies": {
     "@supabase/supabase-js": "^2.97.0"
   }
