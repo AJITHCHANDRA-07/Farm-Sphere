@@ -19,6 +19,14 @@ export default defineConfig(({ mode }) => ({
   build: {
     rollupOptions: {
       external: [],
+      output: {
+        manualChunks: undefined,
+      },
     },
+    minify: "terser",
+    sourcemap: false,
+  },
+  esbuild: {
+    target: "es2020",
   },
 }));
