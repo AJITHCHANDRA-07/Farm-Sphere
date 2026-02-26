@@ -1,0 +1,30 @@
+name: Deploy FarmSphere
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        
+    - name: Install dependencies
+      run: |
+        cd farmsphere-backend
+        npm ci
+        
+    - name: Deploy to Production
+      run: |
+        echo "🚀 Deploying to production..."
+        # Add your deployment commands here
+        # Example: vercel --prod
+        # Example: aws s3 sync ./build s3://your-buck

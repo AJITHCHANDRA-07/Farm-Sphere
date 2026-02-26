@@ -1,0 +1,592 @@
+const { createClient } = require('@supabase/supabase-js');
+
+// Initialize Supabase client
+const supabaseUrl = 'https://vrqthuouyxmkgycmmjzt.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZycXRodW91eXhta2d5Y21tanp0Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MDYyMTAxMywiZXhwIjoyMDg2MTk3MDEzfQ.XGqPi-F3wLim21IAqY9l_CjLwSoy_hCjAdsxXkJDtd4';
+
+const supabase = createClient(supabaseUrl, supabaseKey);
+
+// Complete 28 states data with proper agricultural information
+const statesData = [
+  {
+    id: 1,
+    state_name: "Andhra Pradesh",
+    major_crop_1: "Rice",
+    crop_1_price_per_quintal: 2350,
+    crop_1_turnover: 55000,
+    crop_1_export_destinations: "UAE, USA, Bangladesh, Saudi Arabia",
+    crop_1_demand_status: "High",
+    major_crop_2: "Cotton",
+    crop_2_price_per_quintal: 6800,
+    crop_2_turnover: 32000,
+    crop_2_export_destinations: "UAE, USA, Bangladesh, Saudi Arabia",
+    crop_2_demand_status: "High",
+    major_crop_3: "Sugarcane",
+    crop_3_price_per_quintal: 3150,
+    crop_3_turnover: 8500,
+    crop_3_export_destinations: "UAE, USA, Bangladesh, Saudi Arabia",
+    crop_3_demand_status: "High"
+  },
+  {
+    id: 2,
+    state_name: "Arunachal Pradesh",
+    major_crop_1: "Ginger",
+    crop_1_price_per_quintal: 8000,
+    crop_1_turnover: 450,
+    crop_1_export_destinations: "UAE, Singapore, Nepal",
+    crop_1_demand_status: "Medium",
+    major_crop_2: "Orange",
+    crop_2_price_per_quintal: 5500,
+    crop_2_turnover: 380,
+    crop_2_export_destinations: "UAE, Singapore, Nepal",
+    crop_2_demand_status: "Medium",
+    major_crop_3: "Cardamom",
+    crop_3_price_per_quintal: 12000,
+    crop_3_turnover: 650,
+    crop_3_export_destinations: "UAE, Singapore, Nepal",
+    crop_3_demand_status: "Medium"
+  },
+  {
+    id: 3,
+    state_name: "Assam",
+    major_crop_1: "Rice",
+    crop_1_price_per_quintal: 2100,
+    crop_1_turnover: 18500,
+    crop_1_export_destinations: "UK, Iran, Russia, Germany",
+    crop_1_demand_status: "Medium",
+    major_crop_2: "Jute",
+    crop_2_price_per_quintal: 4500,
+    crop_2_turnover: 4500,
+    crop_2_export_destinations: "UK, Iran, Russia, Germany",
+    crop_2_demand_status: "Medium",
+    major_crop_3: "Tea",
+    crop_3_price_per_quintal: 25000,
+    crop_3_turnover: 25000,
+    crop_3_export_destinations: "UK, Iran, Russia, Germany",
+    crop_3_demand_status: "Medium"
+  },
+  {
+    id: 4,
+    state_name: "Bihar",
+    major_crop_1: "Rice",
+    crop_1_price_per_quintal: 2200,
+    crop_1_turnover: 45000,
+    crop_1_export_destinations: "UAE, Saudi Arabia, Nepal",
+    crop_1_demand_status: "High",
+    major_crop_2: "Wheat",
+    crop_2_price_per_quintal: 2800,
+    crop_2_turnover: 28000,
+    crop_2_export_destinations: "UAE, Saudi Arabia, Nepal",
+    crop_2_demand_status: "High",
+    major_crop_3: "Maize",
+    crop_3_price_per_quintal: 1850,
+    crop_3_turnover: 8500,
+    crop_3_export_destinations: "UAE, Saudi Arabia, Nepal",
+    crop_3_demand_status: "Medium"
+  },
+  {
+    id: 5,
+    state_name: "Chhattisgarh",
+    major_crop_1: "Rice",
+    crop_1_price_per_quintal: 2400,
+    crop_1_turnover: 22000,
+    crop_1_export_destinations: "UAE, Singapore, Malaysia",
+    crop_1_demand_status: "High",
+    major_crop_2: "Pulses",
+    crop_2_price_per_quintal: 6500,
+    crop_2_turnover: 12000,
+    crop_2_export_destinations: "UAE, Singapore, Malaysia",
+    crop_2_demand_status: "High",
+    major_crop_3: "Oilseeds",
+    crop_3_price_per_quintal: 5500,
+    crop_3_turnover: 8000,
+    crop_3_export_destinations: "UAE, Singapore, Malaysia",
+    crop_3_demand_status: "Medium"
+  },
+  {
+    id: 6,
+    state_name: "Goa",
+    major_crop_1: "Rice",
+    crop_1_price_per_quintal: 2800,
+    crop_1_turnover: 1200,
+    crop_1_export_destinations: "UAE, UK, Portugal",
+    crop_1_demand_status: "Medium",
+    major_crop_2: "Cashew",
+    crop_2_price_per_quintal: 15000,
+    crop_2_turnover: 3500,
+    crop_2_export_destinations: "UAE, UK, Portugal",
+    crop_2_demand_status: "High",
+    major_crop_3: "Coconut",
+    crop_3_price_per_quintal: 3500,
+    crop_3_turnover: 2800,
+    crop_3_export_destinations: "UAE, UK, Portugal",
+    crop_3_demand_status: "Medium"
+  },
+  {
+    id: 7,
+    state_name: "Gujarat",
+    major_crop_1: "Cotton",
+    crop_1_price_per_quintal: 6800,
+    crop_1_turnover: 52000,
+    crop_1_export_destinations: "China, USA, Japan",
+    crop_1_demand_status: "High",
+    major_crop_2: "Groundnut",
+    crop_2_price_per_quintal: 7500,
+    crop_2_turnover: 2800,
+    crop_2_export_destinations: "China, USA, Japan",
+    crop_2_demand_status: "High",
+    major_crop_3: "Castor",
+    crop_3_price_per_quintal: 8500,
+    crop_3_turnover: 1200,
+    crop_3_export_destinations: "China, USA, Japan",
+    crop_3_demand_status: "High"
+  },
+  {
+    id: 8,
+    state_name: "Haryana",
+    major_crop_1: "Wheat",
+    crop_1_price_per_quintal: 2900,
+    crop_1_turnover: 35000,
+    crop_1_export_destinations: "UAE, Saudi Arabia, Iran",
+    crop_1_demand_status: "High",
+    major_crop_2: "Rice",
+    crop_2_price_per_quintal: 2500,
+    crop_2_turnover: 28000,
+    crop_2_export_destinations: "UAE, Saudi Arabia, Iran",
+    crop_2_demand_status: "High",
+    major_crop_3: "Sugarcane",
+    crop_3_price_per_quintal: 3200,
+    crop_3_turnover: 8500,
+    crop_3_export_destinations: "UAE, Saudi Arabia, Iran",
+    crop_3_demand_status: "Medium"
+  },
+  {
+    id: 9,
+    state_name: "Himachal Pradesh",
+    major_crop_1: "Apples",
+    crop_1_price_per_quintal: 4500,
+    crop_1_turnover: 5500,
+    crop_1_export_destinations: "UAE, UK, Singapore",
+    crop_1_demand_status: "High",
+    major_crop_2: "Potatoes",
+    crop_2_price_per_quintal: 2200,
+    crop_2_turnover: 3200,
+    crop_2_export_destinations: "UAE, UK, Singapore",
+    crop_2_demand_status: "Medium",
+    major_crop_3: "Ginger",
+    crop_3_price_per_quintal: 8500,
+    crop_3_turnover: 1800,
+    crop_3_export_destinations: "UAE, UK, Singapore",
+    crop_3_demand_status: "Medium"
+  },
+  {
+    id: 10,
+    state_name: "Jharkhand",
+    major_crop_1: "Rice",
+    crop_1_price_per_quintal: 2300,
+    crop_1_turnover: 15000,
+    crop_1_export_destinations: "UAE, Bangladesh, Nepal",
+    crop_1_demand_status: "High",
+    major_crop_2: "Pulses",
+    crop_2_price_per_quintal: 6200,
+    crop_2_turnover: 8500,
+    crop_2_export_destinations: "UAE, Bangladesh, Nepal",
+    crop_2_demand_status: "High",
+    major_crop_3: "Oilseeds",
+    crop_3_price_per_quintal: 5500,
+    crop_3_turnover: 4500,
+    crop_3_export_destinations: "UAE, Bangladesh, Nepal",
+    crop_3_demand_status: "Medium"
+  },
+  {
+    id: 11,
+    state_name: "Karnataka",
+    major_crop_1: "Rice",
+    crop_1_price_per_quintal: 2400,
+    crop_1_turnover: 32000,
+    crop_1_export_destinations: "USA, Europe, Japan",
+    crop_1_demand_status: "High",
+    major_crop_2: "Sugarcane",
+    crop_2_price_per_quintal: 3200,
+    crop_2_turnover: 28000,
+    crop_2_export_destinations: "USA, Europe, Japan",
+    crop_2_demand_status: "High",
+    major_crop_3: "Coffee",
+    crop_3_price_per_quintal: 45000,
+    crop_3_turnover: 8500,
+    crop_3_export_destinations: "USA, Europe, Japan",
+    crop_3_demand_status: "High"
+  },
+  {
+    id: 12,
+    state_name: "Kerala",
+    major_crop_1: "Rice",
+    crop_1_price_per_quintal: 3200,
+    crop_1_turnover: 8500,
+    crop_1_export_destinations: "UAE, Saudi Arabia, USA",
+    crop_1_demand_status: "Medium",
+    major_crop_2: "Coconut",
+    crop_2_price_per_quintal: 3500,
+    crop_2_turnover: 6500,
+    crop_2_export_destinations: "UAE, Saudi Arabia, USA",
+    crop_2_demand_status: "High",
+    major_crop_3: "Spices",
+    crop_3_price_per_quintal: 15000,
+    crop_3_turnover: 12000,
+    crop_3_export_destinations: "UAE, Saudi Arabia, USA",
+    crop_3_demand_status: "High"
+  },
+  {
+    id: 13,
+    state_name: "Madhya Pradesh",
+    major_crop_1: "Wheat",
+    crop_1_price_per_quintal: 2700,
+    crop_1_turnover: 42000,
+    crop_1_export_destinations: "UAE, Saudi Arabia, Iran",
+    crop_1_demand_status: "High",
+    major_crop_2: "Soybean",
+    crop_2_price_per_quintal: 4500,
+    crop_2_turnover: 18000,
+    crop_2_export_destinations: "UAE, Saudi Arabia, Iran",
+    crop_2_demand_status: "High",
+    major_crop_3: "Pulses",
+    crop_3_price_per_quintal: 6500,
+    crop_3_turnover: 12000,
+    crop_3_export_destinations: "UAE, Saudi Arabia, Iran",
+    crop_3_demand_status: "High"
+  },
+  {
+    id: 14,
+    state_name: "Maharashtra",
+    major_crop_1: "Cotton",
+    crop_1_price_per_quintal: 6200,
+    crop_1_turnover: 45000,
+    crop_1_export_destinations: "UAE, Saudi Arabia, China",
+    crop_1_demand_status: "High",
+    major_crop_2: "Soybean",
+    crop_2_price_per_quintal: 4500,
+    crop_2_turnover: 22000,
+    crop_2_export_destinations: "UAE, Saudi Arabia, China",
+    crop_2_demand_status: "High",
+    major_crop_3: "Wheat",
+    crop_3_price_per_quintal: 2800,
+    crop_3_turnover: 18000,
+    crop_3_export_destinations: "UAE, Saudi Arabia, China",
+    crop_3_demand_status: "High"
+  },
+  {
+    id: 15,
+    state_name: "Manipur",
+    major_crop_1: "Rice",
+    crop_1_price_per_quintal: 2600,
+    crop_1_turnover: 1200,
+    crop_1_export_destinations: "UAE, Bangladesh, Myanmar",
+    crop_1_demand_status: "Medium",
+    major_crop_2: "Pulses",
+    crop_2_price_per_quintal: 6800,
+    crop_2_turnover: 850,
+    crop_2_export_destinations: "UAE, Bangladesh, Myanmar",
+    crop_2_demand_status: "Medium",
+    major_crop_3: "Turmeric",
+    crop_3_price_per_quintal: 12000,
+    crop_3_turnover: 650,
+    crop_3_export_destinations: "UAE, Bangladesh, Myanmar",
+    crop_3_demand_status: "Medium"
+  },
+  {
+    id: 16,
+    state_name: "Meghalaya",
+    major_crop_1: "Rice",
+    crop_1_price_per_quintal: 2500,
+    crop_1_turnover: 1800,
+    crop_1_export_destinations: "UAE, Bangladesh, Nepal",
+    crop_1_demand_status: "Medium",
+    major_crop_2: "Maize",
+    crop_2_price_per_quintal: 2000,
+    crop_2_turnover: 950,
+    crop_2_export_destinations: "UAE, Bangladesh, Nepal",
+    crop_2_demand_status: "Medium",
+    major_crop_3: "Pineapples",
+    crop_3_price_per_quintal: 8500,
+    crop_3_turnover: 450,
+    crop_3_export_destinations: "UAE, Bangladesh, Nepal",
+    crop_3_demand_status: "Medium"
+  },
+  {
+    id: 17,
+    state_name: "Mizoram",
+    major_crop_1: "Rice",
+    crop_1_price_per_quintal: 2400,
+    crop_1_turnover: 850,
+    crop_1_export_destinations: "UAE, Bangladesh, Myanmar",
+    crop_1_demand_status: "Medium",
+    major_crop_2: "Ginger",
+    crop_2_price_per_quintal: 8000,
+    crop_2_turnover: 550,
+    crop_2_export_destinations: "UAE, Bangladesh, Myanmar",
+    crop_2_demand_status: "Medium",
+    major_crop_3: "Chilies",
+    crop_3_price_per_quintal: 8500,
+    crop_3_turnover: 350,
+    crop_3_export_destinations: "UAE, Bangladesh, Myanmar",
+    crop_3_demand_status: "Medium"
+  },
+  {
+    id: 18,
+    state_name: "Nagaland",
+    major_crop_1: "Rice",
+    crop_1_price_per_quintal: 2300,
+    crop_1_turnover: 1500,
+    crop_1_export_destinations: "UAE, Myanmar, Nepal",
+    crop_1_demand_status: "Medium",
+    major_crop_2: "Maize",
+    crop_2_price_per_quintal: 1900,
+    crop_2_turnover: 850,
+    crop_2_export_destinations: "UAE, Myanmar, Nepal",
+    crop_2_demand_status: "Medium",
+    major_crop_3: "Pulses",
+    crop_3_price_per_quintal: 6500,
+    crop_3_turnover: 450,
+    crop_3_export_destinations: "UAE, Myanmar, Nepal",
+    crop_3_demand_status: "Medium"
+  },
+  {
+    id: 19,
+    state_name: "Odisha",
+    major_crop_1: "Rice",
+    crop_1_price_per_quintal: 2100,
+    crop_1_turnover: 25000,
+    crop_1_export_destinations: "UAE, Saudi Arabia, Bangladesh",
+    crop_1_demand_status: "High",
+    major_crop_2: "Pulses",
+    crop_2_price_per_quintal: 6000,
+    crop_2_turnover: 12000,
+    crop_2_export_destinations: "UAE, Saudi Arabia, Bangladesh",
+    crop_2_demand_status: "High",
+    major_crop_3: "Oilseeds",
+    crop_3_price_per_quintal: 5500,
+    crop_3_turnover: 8000,
+    crop_3_export_destinations: "UAE, Saudi Arabia, Bangladesh",
+    crop_3_demand_status: "Medium"
+  },
+  {
+    id: 20,
+    state_name: "Punjab",
+    major_crop_1: "Wheat",
+    crop_1_price_per_quintal: 3000,
+    crop_1_turnover: 55000,
+    crop_1_export_destinations: "UAE, Saudi Arabia, Iran",
+    crop_1_demand_status: "High",
+    major_crop_2: "Rice",
+    crop_2_price_per_quintal: 2600,
+    crop_2_turnover: 35000,
+    crop_2_export_destinations: "UAE, Saudi Arabia, Iran",
+    crop_2_demand_status: "High",
+    major_crop_3: "Cotton",
+    crop_3_price_per_quintal: 6500,
+    crop_3_turnover: 12000,
+    crop_3_export_destinations: "UAE, Saudi Arabia, Iran",
+    crop_3_demand_status: "High"
+  },
+  {
+    id: 21,
+    state_name: "Rajasthan",
+    major_crop_1: "Wheat",
+    crop_1_price_per_quintal: 2800,
+    crop_1_turnover: 38000,
+    crop_1_export_destinations: "UAE, Saudi Arabia, Iran",
+    crop_1_demand_status: "High",
+    major_crop_2: "Bajra",
+    crop_2_price_per_quintal: 2200,
+    crop_2_turnover: 15000,
+    crop_2_export_destinations: "UAE, Saudi Arabia, Iran",
+    crop_2_demand_status: "Medium",
+    major_crop_3: "Pulses",
+    crop_3_price_per_quintal: 6500,
+    crop_3_turnover: 12000,
+    crop_3_export_destinations: "UAE, Saudi Arabia, Iran",
+    crop_3_demand_status: "High"
+  },
+  {
+    id: 22,
+    state_name: "Sikkim",
+    major_crop_1: "Rice",
+    crop_1_price_per_quintal: 2700,
+    crop_1_turnover: 650,
+    crop_1_export_destinations: "UAE, Nepal, Bhutan",
+    crop_1_demand_status: "Medium",
+    major_crop_2: "Maize",
+    crop_2_price_per_quintal: 2100,
+    crop_2_turnover: 450,
+    crop_2_export_destinations: "UAE, Nepal, Bhutan",
+    crop_2_demand_status: "Medium",
+    major_crop_3: "Cardamom",
+    crop_3_price_per_quintal: 12000,
+    crop_3_turnover: 850,
+    crop_3_export_destinations: "UAE, Nepal, Bhutan",
+    crop_3_demand_status: "Medium"
+  },
+  {
+    id: 23,
+    state_name: "Tamil Nadu",
+    major_crop_1: "Rice",
+    crop_1_price_per_quintal: 2500,
+    crop_1_turnover: 45000,
+    crop_1_export_destinations: "UAE, Saudi Arabia, Singapore",
+    crop_1_demand_status: "High",
+    major_crop_2: "Sugarcane",
+    crop_2_price_per_quintal: 3100,
+    crop_2_turnover: 22000,
+    crop_2_export_destinations: "UAE, Saudi Arabia, Singapore",
+    crop_2_demand_status: "High",
+    major_crop_3: "Cotton",
+    crop_3_price_per_quintal: 6500,
+    crop_3_turnover: 15000,
+    crop_3_export_destinations: "UAE, Saudi Arabia, Singapore",
+    crop_3_demand_status: "High"
+  },
+  {
+    id: 24,
+    state_name: "Telangana",
+    major_crop_1: "Rice",
+    crop_1_price_per_quintal: 2500,
+    crop_1_turnover: 25000,
+    crop_1_export_destinations: "UAE, USA, UK, Singapore",
+    crop_1_demand_status: "High",
+    major_crop_2: "Cotton",
+    crop_2_price_per_quintal: 6500,
+    crop_2_turnover: 18000,
+    crop_2_export_destinations: "UAE, USA, UK, Singapore",
+    crop_2_demand_status: "High",
+    major_crop_3: "Sugarcane",
+    crop_3_price_per_quintal: 3500,
+    crop_3_turnover: 12000,
+    crop_3_export_destinations: "UAE, USA, UK, Singapore",
+    crop_3_demand_status: "High"
+  },
+  {
+    id: 25,
+    state_name: "Tripura",
+    major_crop_1: "Rice",
+    crop_1_price_per_quintal: 2200,
+    crop_1_turnover: 2200,
+    crop_1_export_destinations: "UAE, Bangladesh, Nepal",
+    crop_1_demand_status: "Medium",
+    major_crop_2: "Pulses",
+    crop_2_price_per_quintal: 6200,
+    crop_2_turnover: 850,
+    crop_2_export_destinations: "UAE, Bangladesh, Nepal",
+    crop_2_demand_status: "Medium",
+    major_crop_3: "Jute",
+    crop_3_price_per_quintal: 4500,
+    crop_3_turnover: 650,
+    crop_3_export_destinations: "UAE, Bangladesh, Nepal",
+    crop_3_demand_status: "Medium"
+  },
+  {
+    id: 26,
+    state_name: "Uttar Pradesh",
+    major_crop_1: "Wheat",
+    crop_1_price_per_quintal: 2800,
+    crop_1_turnover: 85000,
+    crop_1_export_destinations: "UAE, Saudi Arabia, Iran",
+    crop_1_demand_status: "High",
+    major_crop_2: "Rice",
+    crop_2_price_per_quintal: 2400,
+    crop_2_turnover: 55000,
+    crop_2_export_destinations: "UAE, Saudi Arabia, Iran",
+    crop_2_demand_status: "High",
+    major_crop_3: "Sugarcane",
+    crop_3_price_per_quintal: 3200,
+    crop_3_turnover: 25000,
+    crop_3_export_destinations: "UAE, Saudi Arabia, Iran",
+    crop_3_demand_status: "High"
+  },
+  {
+    id: 27,
+    state_name: "Uttarakhand",
+    major_crop_1: "Rice",
+    crop_1_price_per_quintal: 2600,
+    crop_1_turnover: 3500,
+    crop_1_export_destinations: "UAE, Nepal, Bhutan",
+    crop_1_demand_status: "Medium",
+    major_crop_2: "Wheat",
+    crop_2_price_per_quintal: 2900,
+    crop_2_turnover: 2800,
+    crop_2_export_destinations: "UAE, Nepal, Bhutan",
+    crop_2_demand_status: "Medium",
+    major_crop_3: "Pulses",
+    crop_3_price_per_quintal: 6500,
+    crop_3_turnover: 1200,
+    crop_3_export_destinations: "UAE, Nepal, Bhutan",
+    crop_3_demand_status: "Medium"
+  },
+  {
+    id: 28,
+    state_name: "West Bengal",
+    major_crop_1: "Rice",
+    crop_1_price_per_quintal: 2300,
+    crop_1_turnover: 28000,
+    crop_1_export_destinations: "UAE, Bangladesh, Nepal",
+    crop_1_demand_status: "High",
+    major_crop_2: "Jute",
+    crop_2_price_per_quintal: 4500,
+    crop_2_turnover: 8500,
+    crop_2_export_destinations: "UAE, Bangladesh, Nepal",
+    crop_2_demand_status: "High",
+    major_crop_3: "Potatoes",
+    crop_3_price_per_quintal: 2200,
+    crop_3_turnover: 6500,
+    crop_3_export_destinations: "UAE, Bangladesh, Nepal",
+    crop_3_demand_status: "Medium"
+  }
+];
+
+async function updateStatesData() {
+  console.log('🔄 UPDADING ALL 28 STATES DATA...');
+  
+  try {
+    // Clear existing data
+    const { error: deleteError } = await supabase
+      .from('State_Wise_Major_Crops')
+      .delete()
+      .neq('id', -1); // This will delete all records
+    
+    if (deleteError) {
+      console.log('❌ Error clearing existing data:', deleteError);
+      return;
+    }
+    
+    console.log('✅ Cleared existing data');
+    
+    // Insert new data
+    const { data, error } = await supabase
+      .from('State_Wise_Major_Crops')
+      .insert(statesData);
+    
+    if (error) {
+      console.log('❌ Error inserting new data:', error);
+      return;
+    }
+    
+    console.log(`✅ Successfully inserted ${data.length} states records`);
+    console.log('🎉 STATES DATA UPDATE COMPLETED!');
+    
+    // Show sample of inserted data
+    console.log('\n📊 SAMPLE INSERTED DATA:');
+    statesData.slice(0, 3).forEach((state, index) => {
+      console.log(`\n--- State ${index + 1}: ${state.state_name} ---`);
+      console.log(`Major Crop 1: ${state.major_crop_1} (₹${state.crop_1_price_per_quintal}/quintal, ₹${state.crop_1_turnover} Cr)`);
+      console.log(`Major Crop 2: ${state.major_crop_2} (₹${state.crop_2_price_per_quintal}/quintal, ₹${state.crop_2_turnover} Cr)`);
+      console.log(`Major Crop 3: ${state.major_crop_3} (₹${state.crop_3_price_per_quintal}/quintal, ₹${state.crop_3_turnover} Cr)`);
+      console.log(`Export Destinations: ${state.crop_1_export_destinations}`);
+      console.log(`Demand Status: ${state.crop_1_demand_status}, ${state.crop_2_demand_status}, ${state.crop_3_demand_status}`);
+    });
+    
+  } catch (error) {
+    console.log('❌ Unexpected error:', error);
+  }
+}
+
+// Run the update
+updateStatesData();

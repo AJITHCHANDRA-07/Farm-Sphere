@@ -1,73 +1,105 @@
-# Welcome to your Lovable project
+# Farm Sphere Visions
 
-## Project info
+A comprehensive agricultural management platform that connects farmers with markets, provides crop insights, and optimizes agricultural supply chains.
 
-**URL**: https://lovable.dev/projects/03bb21ba-ed46-4d87-96db-3129bcf35e5b
+## Project Structure
 
-## How can I edit this code?
+```
+farmsphere-visions-main/
+├── frontend/          # React + TypeScript frontend application
+├── backend/           # Node.js + Express API server
+├── database/          # SQL schemas and migration files
+├── .git/             # Git repository
+├── venv/             # Python virtual environment (if needed)
+└── package.json      # Root package configuration
+```
 
-There are several ways of editing your application.
+## Getting Started
 
-**Use Lovable**
+### Prerequisites
+- Node.js (v18 or higher)
+- npm or bun
+- Database (PostgreSQL recommended)
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/03bb21ba-ed46-4d87-96db-3129bcf35e5b) and start prompting.
+### Installation
 
-Changes made via Lovable will be committed automatically to this repo.
+1. Install dependencies for all packages:
+```bash
+npm run install:all
+```
 
-**Use your preferred IDE**
+2. Set up environment variables:
+```bash
+# Copy backend env template
+cp backend/.env.example backend/.env
+# Configure your database connection
+```
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+3. Set up database:
+```bash
+# Run database migrations
+cd database
+# Execute SQL files in order:
+# 1. create-6-table-schema.sql
+# 2. insert-data.sql
+# 3. add-all-missing-columns.sql
+```
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Development
 
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+Start both frontend and backend in development mode:
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+Or start individually:
+```bash
+npm run dev:frontend  # Frontend at http://localhost:5173
+npm run dev:backend   # Backend at http://localhost:3001
+```
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Production
 
-**Use GitHub Codespaces**
+Build and deploy:
+```bash
+npm run build:frontend
+npm run start:backend
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Features
 
-## What technologies are used for this project?
+- **Crop Management**: Browse and manage crop information
+- **Market Insights**: Get real-time market data and pricing
+- **Supply Chain Optimization**: Connect farmers with buyers
+- **Government Schemes**: Access agricultural subsidies and programs
+- **District Suitability**: Find crops suitable for your region
 
-This project is built with:
+## Technology Stack
 
-- Vite
+### Frontend
+- React 18
 - TypeScript
-- React
-- shadcn-ui
 - Tailwind CSS
+- Vite
+- Lucide Icons
 
-## How can I deploy this project?
+### Backend
+- Node.js
+- Express
+- PostgreSQL
+- Ollama AI Integration
 
-Simply open [Lovable](https://lovable.dev/projects/03bb21ba-ed46-4d87-96db-3129bcf35e5b) and click on Share -> Publish.
+### Database
+- PostgreSQL
+- SQL Schema Files
 
-## Can I connect a custom domain to my Lovable project?
+## Contributing
 
-Yes, you can!
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Submit a pull request
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## License
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+MIT License

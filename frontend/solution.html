@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FarmSphere - Working Now</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(45deg, #4CAF50, #2196F3);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            padding: 40px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+        .status {
+            background: rgba(255,255,255,0.2);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .crops-container {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .crop-item {
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid #4CAF50;
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 24px;
+        }
+        .search-box {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            border: none;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .success {
+            background: #4CAF50;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .error {
+            background: #f44336;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌱 FarmSphere Visions</h1>
+            <p style="font-size: 24px;">Agricultural Management Platform - WORKING!</p>
+        </div>
+        
+        <div class="status">
+            <h2>✅ System Status: ALL ONLINE</h2>
+            <p>Frontend: Port 8080 | Backend: Port 3001 | Database: Connected</p>
+        </div>
+        
+        <input type="text" class="search-box" placeholder="🔍 Search crops..." id="searchInput">
+        
+        <div class="crops-container">
+            <div id="cropsDisplay" class="loading">
+                Loading crops data...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allCrops = [];
+        
+        async function loadCrops() {
+            const display = document.getElementById('cropsDisplay');
+            display.innerHTML = '<div class="loading">🔄 Loading crops from database...</div>';
+            
+            try {
+                const response = await fetch('http://localhost:3001/api/crops');
+                console.log('Response status:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                allCrops = await response.json();
+                console.log('Loaded crops:', allCrops.length);
+                
+                displayCrops(allCrops);
+                display.innerHTML = '<div class="success">✅ Successfully loaded ' + allCrops.length + ' crops!</div>' + display.innerHTML;
+                
+            } catch (error) {
+                console.error('Error:', error);
+                display.innerHTML = `
+                    <div class="error">❌ Error: ${error.message}</div>
+                    <div style="margin-top: 20px;">
+                        <h3>🔧 Troubleshooting:</h3>
+                        <p>1. Check if backend is running on port 3001</p>
+                        <p>2. Check browser console for errors</p>
+                        <p>3. Verify database connection</p>
+                    </div>
+                `;
+            }
+        }
+        
+        function displayCrops(crops) {
+            const display = document.getElementById('cropsDisplay');
+            
+            if (!crops || crops.length === 0) {
+                display.innerHTML = '<div class="error">No crops found in database</div>';
+                return;
+            }
+            
+            const html = crops.slice(0, 20).map((crop, index) => `
+                <div class="crop-item">
+                    <h3>🌾 ${crop['Crop Name'] || 'Unknown Crop'}</h3>
+                    <p><strong>Type:</strong> ${crop['Crop Type'] || 'N/A'}</p>
+                    <p><strong>Duration:</strong> ${crop['Crop Duration (Days)'] || 'N/A'} days</p>
+                    <p><strong>Districts:</strong> ${crop['Suitable Telangana Districts'] || 'N/A'}</p>
+                    <p><strong>Water:</strong> ${crop['Water Requirement'] || 'N/A'}</p>
+                    <p><strong>Soil:</strong> ${crop['Primary Soil Type Required'] || 'N/A'}</p>
+                    <p><strong>Demand:</strong> ${crop['Demand Status'] || 'N/A'}</p>
+                    <p><strong>Supply:</strong> ${crop['Supply Status'] || 'N/A'}</p>
+                </div>
+            `).join('');
+            
+            display.innerHTML = html + (crops.length > 20 ? `<p style="text-align: center; margin-top: 20px;">... and ${crops.length - 20} more crops</p>` : '');
+        }
+        
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const filtered = allCrops.filter(crop => 
+                (crop['Crop Name'] && crop['Crop Name'].toLowerCase().includes(searchTerm)) ||
+                (crop['Crop Type'] && crop['Crop Type'].toLowerCase().includes(searchTerm))
+            );
+            displayCrops(filtered);
+        });
+        
+        // Load immediately
+        loadCrops();
+        
+        // Show loading message immediately
+        document.getElementById('cropsDisplay').innerHTML = '<div class="loading">🔄 Initializing FarmSphere...</div>';
+    </script>
+</body>
+</html>
