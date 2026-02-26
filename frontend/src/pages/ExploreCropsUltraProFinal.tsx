@@ -438,40 +438,17 @@ const ExploreCropsUltraProFinal = () => {
 
   // 🎯 HELPER FUNCTION: CONVERT COORDINATES TO DISTRICT
   const getDistrictFromCoordinates = async (lat, lon) => {
-    // 🎯 COMPLETE TELANGANA DISTRICT BOUNDARIES (ALL 33 DISTRICTS)
+    // 🎯 TELANGANA DISTRICT BOUNDARIES (APPROXIMATE)
     const telanganaDistricts = {
       'Hyderabad': { lat: [17.38, 17.45], lon: [78.40, 78.55] },
       'Rangareddy': { lat: [17.30, 17.40], lon: [78.40, 78.60] },
       'Medchal': { lat: [17.45, 17.55], lon: [78.45, 78.65] },
       'Sangareddy': { lat: [17.55, 17.65], lon: [78.25, 78.40] },
       'Warangal': { lat: [17.95, 18.15], lon: [79.45, 79.75] },
-      'Hanumakonda': { lat: [17.95, 18.15], lon: [79.45, 79.75] },
       'Nizamabad': { lat: [18.65, 18.75], lon: [78.10, 78.25] },
       'Karimnagar': { lat: [18.40, 18.50], lon: [78.95, 79.15] },
       'Khammam': { lat: [17.20, 17.30], lon: [80.15, 80.35] },
-      'Adilabad': { lat: [19.66, 19.68], lon: [78.53, 78.55] },
-      'Bhadradri Kothagudem': { lat: [17.55, 17.65], lon: [80.65, 80.75] },
-      'Jagtial': { lat: [18.80, 18.85], lon: [78.90, 78.95] },
-      'Jangaon': { lat: [17.70, 17.75], lon: [78.85, 78.90] },
-      'Jayashankar Bhupalpally': { lat: [18.20, 18.25], lon: [79.85, 79.90] },
-      'Jogulamba Gadwal': { lat: [16.23, 16.25], lon: [77.80, 77.85] },
-      'Kamareddy': { lat: [18.30, 18.35], lon: [78.35, 78.40] },
-      'Kumuram Bheem': { lat: [19.35, 19.40], lon: [78.85, 78.90] },
-      'Mahabubabad': { lat: [17.60, 17.65], lon: [78.80, 78.85] },
-      'Mahabubnagar': { lat: [16.73, 16.75], lon: [77.98, 78.00] },
-      'Mancherial': { lat: [18.85, 18.90], lon: [79.45, 79.50] },
-      'Mulugu': { lat: [18.35, 18.40], lon: [80.00, 80.05] },
-      'Nagarkurnool': { lat: [16.48, 16.50], lon: [78.32, 78.35] },
-      'Nalgonda': { lat: [17.05, 17.10], lon: [79.25, 79.30] },
-      'Narayanpet': { lat: [16.73, 16.75], lon: [77.50, 77.55] },
-      'Nirmal': { lat: [19.10, 19.15], lon: [78.35, 78.40] },
-      'Peddapalli': { lat: [18.60, 18.65], lon: [79.35, 79.40] },
-      'Rajanna Sircilla': { lat: [18.35, 18.40], lon: [78.85, 78.90] },
-      'Siddipet': { lat: [18.10, 18.15], lon: [78.85, 78.90] },
-      'Suryapet': { lat: [16.85, 16.90], lon: [79.60, 79.65] },
-      'Vikarabad': { lat: [17.30, 17.35], lon: [77.75, 77.80] },
-      'Wanaparthy': { lat: [16.35, 16.40], lon: [78.05, 78.10] },
-      'Yadadri Bhuvanagiri': { lat: [17.10, 17.15], lon: [78.90, 78.95] }
+      // Add more districts as needed
     };
     
     // 🎯 FIND CLOSEST DISTRICT
@@ -493,7 +470,6 @@ const ExploreCropsUltraProFinal = () => {
     }
     
     console.log(`🎯 Coordinates ${lat},${lon} mapped to district: ${closestDistrict}`);
-    console.log(`🎯 Distance to ${closestDistrict}: ${minDistance.toFixed(4)}`);
     return closestDistrict;
   };
 
@@ -505,36 +481,15 @@ const ExploreCropsUltraProFinal = () => {
       'Rangareddy': 'Rangareddy',
       'Sangareddy': 'Sangareddy',
       'Warangal': 'Warangal',
-      'Hanumakonda': 'Hanumakonda',
-      'Hanamkonda': 'Hanumakonda',
-      'Kazipet': 'Warangal',
       'Nizamabad': 'Nizamabad',
       'Karimnagar': 'Karimnagar',
       'Khammam': 'Khammam',
       'Medchal': 'Medchal',
+      'Hanamkonda': 'Hanamkonda',
       'Nalgonda': 'Nalgonda',
       'Mahabubnagar': 'Mahabubnagar',
       'Adilabad': 'Adilabad',
-      'Bhadradri Kothagudem': 'Bhadradri Kothagudem',
-      'Jagtial': 'Jagtial',
-      'Jangaon': 'Jangaon',
-      'Jayashankar Bhupalpally': 'Jayashankar Bhupalpally',
-      'Jogulamba Gadwal': 'Jogulamba Gadwal',
-      'Kamareddy': 'Kamareddy',
-      'Kumuram Bheem': 'Kumuram Bheem',
-      'Mahabubabad': 'Mahabubabad',
-      'Mancherial': 'Mancherial',
-      'Mulugu': 'Mulugu',
-      'Nagarkurnool': 'Nagarkurnool',
-      'Narayanpet': 'Narayanpet',
-      'Nirmal': 'Nirmal',
-      'Peddapalli': 'Peddapalli',
-      'Rajanna Sircilla': 'Rajanna Sircilla',
-      'Siddipet': 'Siddipet',
-      'Suryapet': 'Suryapet',
-      'Vikarabad': 'Vikarabad',
-      'Wanaparthy': 'Wanaparthy',
-      'Yadadri Bhuvanagiri': 'Yadadri Bhuvanagiri'
+      // Add more mappings as needed
     };
     
     const district = cityToDistrictMap[city] || 'Hyderabad';
@@ -645,56 +600,116 @@ const ExploreCropsUltraProFinal = () => {
                 </div>
               </div>
               
-              {/* 🌐 DISTRICT SELECTOR - ALWAYS AVAILABLE FOR TESTING */}
-              <Select value={userLocation.district} onValueChange={(value) => {
-                console.log('🎯 MANUAL DISTRICT SELECTED:', value);
-                setUserLocation({
-                  district: value,
-                  state: 'Telangana'
-                });
-                localStorage.setItem('userDistrict', value);
-                localStorage.setItem('locationMethod', 'MANUAL-SELECTION');
-                localStorage.setItem('locationTimestamp', new Date().toISOString());
-                console.log('✅ Manual district set:', value);
-              }}>
-                <SelectTrigger className="w-48 mt-3">
-                  <SelectValue placeholder="Select district" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Hyderabad">Hyderabad</SelectItem>
-                  <SelectItem value="Rangareddy">Rangareddy</SelectItem>
-                  <SelectItem value="Warangal">Warangal</SelectItem>
-                  <SelectItem value="Hanumakonda">Hanumakonda</SelectItem>
-                  <SelectItem value="Medchal">Medchal</SelectItem>
-                  <SelectItem value="Nizamabad">Nizamabad</SelectItem>
-                  <SelectItem value="Karimnagar">Karimnagar</SelectItem>
-                  <SelectItem value="Khammam">Khammam</SelectItem>
-                  <SelectItem value="Sangareddy">Sangareddy</SelectItem>
-                  <SelectItem value="Adilabad">Adilabad</SelectItem>
-                  <SelectItem value="Bhadradri Kothagudem">Bhadradri Kothagudem</SelectItem>
-                  <SelectItem value="Jagtial">Jagtial</SelectItem>
-                  <SelectItem value="Jangaon">Jangaon</SelectItem>
-                  <SelectItem value="Jayashankar Bhupalpally">Jayashankar Bhupalpally</SelectItem>
-                  <SelectItem value="Jogulamba Gadwal">Jogulamba Gadwal</SelectItem>
-                  <SelectItem value="Kamareddy">Kamareddy</SelectItem>
-                  <SelectItem value="Kumuram Bheem">Kumuram Bheem</SelectItem>
-                  <SelectItem value="Mahabubabad">Mahabubabad</SelectItem>
-                  <SelectItem value="Mahabubnagar">Mahabubnagar</SelectItem>
-                  <SelectItem value="Mancherial">Mancherial</SelectItem>
-                  <SelectItem value="Mulugu">Mulugu</SelectItem>
-                  <SelectItem value="Nagarkurnool">Nagarkurnool</SelectItem>
-                  <SelectItem value="Nalgonda">Nalgonda</SelectItem>
-                  <SelectItem value="Narayanpet">Narayanpet</SelectItem>
-                  <SelectItem value="Nirmal">Nirmal</SelectItem>
-                  <SelectItem value="Peddapalli">Peddapalli</SelectItem>
-                  <SelectItem value="Rajanna Sircilla">Rajanna Sircilla</SelectItem>
-                  <SelectItem value="Siddipet">Siddipet</SelectItem>
-                  <SelectItem value="Suryapet">Suryapet</SelectItem>
-                  <SelectItem value="Vikarabad">Vikarabad</SelectItem>
-                  <SelectItem value="Wanaparthy">Wanaparthy</SelectItem>
-                  <SelectItem value="Yadadri Bhuvanagiri">Yadadri Bhuvanagiri</SelectItem>
-                </SelectContent>
-              </Select>
+              {/* 🌐 LOCAL TESTING DISTRICT SELECTOR */}
+              {(getLocationMethod() === 'LOCAL-DEVELOPMENT' || getLocationMethod() === 'NETWORK-DEVELOPMENT') && (
+                <div className="mt-4">
+                  <p className="text-xs text-gray-600 mb-2 text-center">🧪 Test Different Districts:</p>
+                  <Select value={userLocation.district} onValueChange={(value) => {
+                    console.log('🧪 LOCAL TESTING DISTRICT SELECTED:', value);
+                    setUserLocation({
+                      district: value,
+                      state: 'Telangana'
+                    });
+                    localStorage.setItem('userDistrict', value);
+                    localStorage.setItem('locationMethod', 'MANUAL-LOCAL');
+                    localStorage.setItem('locationTimestamp', new Date().toISOString());
+                    console.log('✅ Local manual district set:', value);
+                  }}>
+                    <SelectTrigger className="w-48">
+                      <SelectValue placeholder="Select district" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Hyderabad">Hyderabad</SelectItem>
+                      <SelectItem value="Rangareddy">Rangareddy</SelectItem>
+                      <SelectItem value="Warangal">Warangal</SelectItem>
+                      <SelectItem value="Medchal">Medchal</SelectItem>
+                      <SelectItem value="Nizamabad">Nizamabad</SelectItem>
+                      <SelectItem value="Karimnagar">Karimnagar</SelectItem>
+                      <SelectItem value="Khammam">Khammam</SelectItem>
+                      <SelectItem value="Sangareddy">Sangareddy</SelectItem>
+                      <SelectItem value="Adilabad">Adilabad</SelectItem>
+                      <SelectItem value="Mahabubnagar">Mahabubnagar</SelectItem>
+                      <SelectItem value="Nalgonda">Nalgonda</SelectItem>
+                      <SelectItem value="Jagtial">Jagtial</SelectItem>
+                      <SelectItem value="Jayashankar Bhupalpally">Jayashankar Bhupalpally</SelectItem>
+                      <SelectItem value="Jangaon">Jangaon</SelectItem>
+                      <SelectItem value="Jogulamba Gadwal">Jogulamba Gadwal</SelectItem>
+                      <SelectItem value="Kamareddy">Kamareddy</SelectItem>
+                      <SelectItem value="Kumuram Bheem">Kumuram Bheem</SelectItem>
+                      <SelectItem value="Mahabubabad">Mahabubabad</SelectItem>
+                      <SelectItem value="Mancherial">Mancherial</SelectItem>
+                      <SelectItem value="Medak">Medak</SelectItem>
+                      <SelectItem value="Mulugu">Mulugu</SelectItem>
+                      <SelectItem value="Nagarkurnool">Nagarkurnool</SelectItem>
+                      <SelectItem value="Narayanpet">Narayanpet</SelectItem>
+                      <SelectItem value="Nirmal">Nirmal</SelectItem>
+                      <SelectItem value="Peddapalli">Peddapalli</SelectItem>
+                      <SelectItem value="Rajanna Sircilla">Rajanna Sircilla</SelectItem>
+                      <SelectItem value="Siddipet">Siddipet</SelectItem>
+                      <SelectItem value="Suryapet">Suryapet</SelectItem>
+                      <SelectItem value="Vikarabad">Vikarabad</SelectItem>
+                      <SelectItem value="Wanaparthy">Wanaparthy</SelectItem>
+                      <SelectItem value="Yadadri Bhuvanagiri">Yadadri Bhuvanagiri</SelectItem>
+                      <SelectItem value="Hanumakonda">Hanumakonda</SelectItem>
+                      <SelectItem value="Bhadradri Kothagudem">Bhadradri Kothagudem</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+
+              {/* 🌐 VERCEL DISTRICT SELECTOR */}
+              {getLocationMethod() === 'VERCEL-PRODUCTION' && (
+                <Select value={userLocation.district} onValueChange={(value) => {
+                  console.log('🎯 VERCEL MANUAL DISTRICT SELECTED:', value);
+                  setUserLocation({
+                    district: value,
+                    state: 'Telangana'
+                  });
+                  localStorage.setItem('userDistrict', value);
+                  localStorage.setItem('locationMethod', 'MANUAL-VERCEL');
+                  localStorage.setItem('locationTimestamp', new Date().toISOString());
+                  console.log('✅ Vercel manual district set:', value);
+                }}>
+                  <SelectTrigger className="w-40">
+                    <SelectValue placeholder="Select district" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Hyderabad">Hyderabad</SelectItem>
+                    <SelectItem value="Rangareddy">Rangareddy</SelectItem>
+                    <SelectItem value="Warangal">Warangal</SelectItem>
+                    <SelectItem value="Medchal">Medchal</SelectItem>
+                    <SelectItem value="Nizamabad">Nizamabad</SelectItem>
+                    <SelectItem value="Karimnagar">Karimnagar</SelectItem>
+                    <SelectItem value="Khammam">Khammam</SelectItem>
+                    <SelectItem value="Sangareddy">Sangareddy</SelectItem>
+                    <SelectItem value="Adilabad">Adilabad</SelectItem>
+                    <SelectItem value="Mahabubnagar">Mahabubnagar</SelectItem>
+                    <SelectItem value="Nalgonda">Nalgonda</SelectItem>
+                    <SelectItem value="Jagtial">Jagtial</SelectItem>
+                    <SelectItem value="Jayashankar Bhupalpally">Jayashankar Bhupalpally</SelectItem>
+                    <SelectItem value="Jangaon">Jangaon</SelectItem>
+                    <SelectItem value="Jogulamba Gadwal">Jogulamba Gadwal</SelectItem>
+                    <SelectItem value="Kamareddy">Kamareddy</SelectItem>
+                    <SelectItem value="Kumuram Bheem">Kumuram Bheem</SelectItem>
+                    <SelectItem value="Mahabubabad">Mahabubabad</SelectItem>
+                    <SelectItem value="Mancherial">Mancherial</SelectItem>
+                    <SelectItem value="Medak">Medak</SelectItem>
+                    <SelectItem value="Mulugu">Mulugu</SelectItem>
+                    <SelectItem value="Nagarkurnool">Nagarkurnool</SelectItem>
+                    <SelectItem value="Narayanpet">Narayanpet</SelectItem>
+                    <SelectItem value="Nirmal">Nirmal</SelectItem>
+                    <SelectItem value="Peddapalli">Peddapalli</SelectItem>
+                    <SelectItem value="Rajanna Sircilla">Rajanna Sircilla</SelectItem>
+                    <SelectItem value="Siddipet">Siddipet</SelectItem>
+                    <SelectItem value="Suryapet">Suryapet</SelectItem>
+                    <SelectItem value="Vikarabad">Vikarabad</SelectItem>
+                    <SelectItem value="Wanaparthy">Wanaparthy</SelectItem>
+                    <SelectItem value="Yadadri Bhuvanagiri">Yadadri Bhuvanagiri</SelectItem>
+                    <SelectItem value="Hanumakonda">Hanumakonda</SelectItem>
+                    <SelectItem value="Bhadradri Kothagudem">Bhadradri Kothagudem</SelectItem>
+                  </SelectContent>
+                </Select>
+              )}
             </div>
           ) : (
             <div className="flex flex-col items-center p-6 bg-blue-50 border border-blue-200 rounded-lg max-w-md">
