@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -12,6 +12,7 @@ import {
 } from '../components/ui/dropdown-menu';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useTranslation } from '../lib/translations';
+import { weatherService, WeatherData } from '../services/weatherService';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -21,9 +22,54 @@ const Header = () => {
   const [otp, setOtp] = useState('');
   const [showOtpField, setShowOtpField] = useState(false);
   const [isOtpSent, setIsOtpSent] = useState(false);
+  const [weather, setWeather] = useState<WeatherData | null>(null);
+  const [weatherLoading, setWeatherLoading] = useState(true);
+  const [weatherError, setWeatherError] = useState<string | null>(null);
   
   const { currentLanguage, setLanguage, languages } = useLanguage();
   const { t } = useTranslation(currentLanguage);
+
+  // Fetch weather data on component mount
+  useEffect(() => {
+    const fetchWeather = async () => {
+      try {
+        setWeatherLoading(true);
+        setWeatherError(null);
+        console.log('🌤️ Starting weather fetch...');
+        
+        const weatherData = await weatherService.getCurrentWeather();
+        console.log('✅ Weather data received:', weatherData);
+        
+        setWeather(weatherData);
+      } catch (error) {
+        console.error('❌ Error fetching weather:', error);
+        setWeatherError('Weather unavailable');
+        
+        // Fallback to default weather
+        setWeather({
+          location: 'Delhi, IN',
+          temperature: 28,
+          condition: 'sunny',
+          humidity: 45,
+          windSpeed: 5,
+          icon: '01d',
+          feelsLike: 30,
+          pressure: 1013,
+          visibility: 10,
+          uvIndex: 6
+        });
+      } finally {
+        setWeatherLoading(false);
+      }
+    };
+
+    fetchWeather();
+    
+    // Refresh weather every 10 minutes
+    const interval = setInterval(fetchWeather, 10 * 60 * 1000);
+    
+    return () => clearInterval(interval);
+  }, []);
 
   const handleSendOtp = () => {
     if (mobileNumber.length === 10) {
@@ -126,9 +172,32 @@ const Header = () => {
                 </DropdownMenu>
 
                 {/* Weather Widget */}
-                <div className="hidden lg:flex items-center text-sm text-gray-600 bg-blue-50 px-3 py-1 rounded-lg">
-                  <span className="mr-1">🌦</span>
-                  28°C • Sunny
+                <div className="hidden lg:flex items-center text-sm text-gray-600 bg-blue-50 px-3 py-1 rounded-lg hover:bg-blue-100 transition-colors cursor-pointer">
+                  {weatherLoading ? (
+                    <>
+                      <span className="mr-1 animate-spin">�️</span>
+                      <span>Loading...</span>
+                    </>
+                  ) : weatherError ? (
+                    <>
+                      <span className="mr-1">❌</span>
+                      <span>{weatherError}</span>
+                    </>
+                  ) : weather ? (
+                    <div className="flex items-center space-x-2">
+                      <span className="text-lg">{weatherService.getWeatherEmoji(weather.condition)}</span>
+                      <span className="font-medium">{weather.temperature}°C</span>
+                      <span className="text-gray-500">•</span>
+                      <span className="text-gray-600 capitalize text-xs">{weather.condition}</span>
+                      <span className="text-gray-500">•</span>
+                      <span className="text-gray-600 text-xs">{weather.location}</span>
+                    </div>
+                  ) : (
+                    <>
+                      <span className="mr-1">🌦️</span>
+                      <span>Weather</span>
+                    </>
+                  )}
                 </div>
 
                 {/* Notification Bell */}
