@@ -29,4 +29,5 @@ export default defineConfig(({ mode }) => ({
   esbuild: {
     target: "es2020",
   },
+  base: mode === 'production' ? '/' : '/',
 }));
