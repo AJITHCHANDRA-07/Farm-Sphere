@@ -84,6 +84,66 @@ const ExploreSchemes: React.FC = () => {
     try {
       setLoading(true);
       console.log('🔍 Fetching schemes from API...');
+      
+      // Temporary: Use mock data for Netlify deployment
+      const mockSchemes = [
+        {
+          id: 1,
+          slug: "pm-kisan-samman-nidhi",
+          name: "PM-Kisan Samman Nidhi",
+          type: "Central",
+          description: "Direct income support scheme for farmers",
+          subsidy: "₹6,000 per year",
+          governingMinistry: "Ministry of Agriculture & Farmers Welfare",
+          objective: "To provide income support to all farmer families across the country",
+          maxAmount: "₹6,000",
+          interestRate: "N/A",
+          targetBeneficiary: "Small and Marginal Farmers",
+          collateral: "Not Applicable",
+          statusTracking: "Available on PM-KMY portal",
+          benefits: "Direct financial assistance for agricultural needs",
+          applicationProcess: "Self-enroll online at the Common Service Centre (CSC) or online portal. Provide Aadhaar, bank details, and land records.",
+          documentsRequired: "Aadhaar Card, Land Records, Bank Account details, Age Proof",
+          creditScore: "Not Applicable",
+          helpdeskNumber: "1800-11-0000",
+          officialApplyLink: "https://pmkisan.gov.in/",
+          image: "",
+          priorityLevel: 1,
+          isActive: true,
+          sources: ["https://pmkisan.gov.in/"]
+        },
+        {
+          id: 2,
+          slug: "pradhan-mantri-fasal-bima-yojana",
+          name: "Pradhan Mantri Fasal Bima Yojana",
+          type: "Central",
+          description: "Crop insurance scheme for farmers",
+          subsidy: "Premium subsidy up to 90%",
+          governingMinistry: "Ministry of Agriculture & Farmers Welfare",
+          objective: "To provide insurance coverage and financial support to farmers in case of crop failure",
+          maxAmount: "Based on crop value",
+          interestRate: "N/A",
+          targetBeneficiary: "All farmers",
+          collateral: "Not Applicable",
+          statusTracking: "Available on official portal",
+          benefits: "Crop insurance against natural calamities",
+          applicationProcess: "Apply through designated insurance companies or banks. Provide crop details and land records.",
+          documentsRequired: "Aadhaar Card, Land Records, Bank Account details, Crop details",
+          creditScore: "Not Applicable",
+          helpdeskNumber: "1800-180-1551",
+          officialApplyLink: "https://pmfby.gov.in/",
+          image: "",
+          priorityLevel: 2,
+          isActive: true,
+          sources: ["https://pmfby.gov.in/"]
+        }
+      ];
+      
+      setSchemes(mockSchemes);
+      setLoading(false);
+      return;
+      
+      // Original API call (commented out for now)
       const response = await fetch('http://192.168.0.3:3001/api/explore-schemes');
       console.log('📡 API Response status:', response.status);
       console.log('📡 API Response headers:', response.headers);
@@ -97,14 +157,18 @@ const ExploreSchemes: React.FC = () => {
       
       if (!contentType || !contentType.includes('application/json')) {
         const text = await response.text();
-        console.log('📡 Received non-JSON response:', text.substring(0, 200));
-        throw new Error('API returned non-JSON response. Check if backend is running correctly.');
+        console.log('📡 Received non-JSON response:', text);
+        throw new Error('Expected JSON response but received HTML');
       }
       
       const data = await response.json();
-      console.log('📊 Received data:', data);
-      console.log('📊 Number of schemes:', data.length);
-      setSchemes(data);
+      console.log('� Received data:', data);
+      
+      if (data.success && data.data) {
+        setSchemes(data.data);
+      } else {
+        throw new Error(data.message || 'Failed to fetch schemes');
+      }
     } catch (error) {
       console.error('❌ Error fetching schemes:', error);
       // Fallback to empty array if API fails
