@@ -23,7 +23,7 @@ export default defineConfig(({ mode }) => ({
         manualChunks: undefined,
       },
     },
-    minify: "terser",
+    minify: "esbuild",
     sourcemap: false,
   },
   esbuild: {
