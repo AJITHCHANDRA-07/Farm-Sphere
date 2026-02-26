@@ -12,6 +12,18 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Search, Filter, Building, Phone, Mail, Send, ArrowLeft, Loader2, ExternalLink, FileText, Users, DollarSign, Shield, Clock, CheckCircle, AlertCircle, Target, TrendingUp, Gift, FileCheck } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTranslation } from '@/lib/translations';
+import { createClient } from '@supabase/supabase-js';
+
+// Initialize Supabase client
+const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_ANON_KEY
+);
+
+console.log('🔧 ENVIRONMENT CHECK:');
+console.log('📡 Supabase URL:', import.meta.env.VITE_SUPABASE_URL);
+console.log('🔑 Supabase Anon Key:', import.meta.env.VITE_SUPABASE_ANON_KEY ? 'Present' : 'MISSING');
+console.log('📋 Table Name: Explore_Schemes');
 
 interface SchemeData {
   id: number;
@@ -83,9 +95,56 @@ const ExploreSchemes: React.FC = () => {
   const fetchSchemes = async () => {
     try {
       setLoading(true);
-      console.log('🔍 Fetching schemes from API...');
+      console.log('🔍 Fetching schemes directly from Supabase...');
       
-      // Temporary: Use mock data for Netlify deployment
+      // Fetch directly from Supabase Explore_Schemes table
+      const { data, error } = await supabase
+        .from('Explore_Schemes')
+        .select('*')
+        .order('Id', { ascending: false });
+      
+      if (error) {
+        console.error('❌ Supabase error:', error);
+        throw error;
+      }
+      
+      console.log(`📊 Found ${data?.length || 0} schemes from Supabase`);
+      console.log('🔗 DATABASE CONNECTION STATUS: SUCCESS - Connected to Explore_Schemes table');
+      console.log('📋 SCHEME COUNT FROM DATABASE:', data?.length || 0);
+      console.log('✅ CONFIRMED: Fetching from Supabase Explore_Schemes table, NOT mock data');
+      
+      // Transform data to match frontend interface
+      const transformedData = (data || []).map(scheme => ({
+        id: scheme.Id,
+        slug: scheme.Slug || scheme['Scheme Name']?.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+        name: scheme['Scheme Name'] || scheme.name,
+        type: scheme.Type || scheme.type,
+        description: scheme.Description || scheme.description,
+        subsidy: scheme.Subsidy || scheme.subsidy,
+        governingMinistry: scheme['Governing Ministry/Department'] || scheme.governingMinistry,
+        objective: scheme.Objective || scheme.objective,
+        benefits: scheme.Benefits || scheme.benefits,
+        maxAmount: scheme['Max Amount/Subsidy'] || scheme.maxAmount,
+        interestRate: scheme['Interest Rate'] || scheme.interestRate,
+        targetBeneficiary: scheme['Target Beneficiary'] || scheme.targetBeneficiary,
+        collateral: scheme.Collateral || scheme.collateral,
+        statusTracking: scheme['Status Tracking'] || scheme.statusTracking,
+        applicationProcess: scheme['Application Process'] || scheme.applicationProcess,
+        documentsRequired: scheme['Documents Required'] || scheme.documentsRequired,
+        creditScore: scheme['Credit Score Requirement'] || scheme.creditScore,
+        helpdeskNumber: scheme['Helpdesk Number'] || scheme.helpdeskNumber,
+        officialApplyLink: scheme['Official Apply Link'] || scheme.officialApplyLink,
+        image: scheme.Image || scheme.image || '',
+        priorityLevel: scheme.Priority || scheme.priorityLevel || 1,
+        isActive: scheme['Is Active'] !== false,
+        sources: scheme.Sources ? (Array.isArray(scheme.Sources) ? scheme.Sources : [scheme.Sources]) : []
+      }));
+      
+      setSchemes(transformedData);
+      console.log('✅ Successfully loaded schemes from Supabase');
+    } catch (error) {
+      console.error('❌ Error fetching schemes from Supabase:', error);
+      // Fallback to mock data if Supabase fails
       const mockSchemes = [
         {
           id: 1,
@@ -102,7 +161,7 @@ const ExploreSchemes: React.FC = () => {
           collateral: "Not Applicable",
           statusTracking: "Available on PM-KMY portal",
           benefits: "Direct financial assistance for agricultural needs",
-          applicationProcess: "Self-enroll online at the Common Service Centre (CSC) or online portal. Provide Aadhaar, bank details, and land records.",
+          applicationProcess: "Self-enroll online at Common Service Centre (CSC) or online portal. Provide Aadhaar, bank details, and land records.",
           documentsRequired: "Aadhaar Card, Land Records, Bank Account details, Age Proof",
           creditScore: "Not Applicable",
           helpdeskNumber: "1800-11-0000",
@@ -138,41 +197,7 @@ const ExploreSchemes: React.FC = () => {
           sources: ["https://pmfby.gov.in/"]
         }
       ];
-      
       setSchemes(mockSchemes);
-      setLoading(false);
-      return;
-      
-      // Original API call (commented out for now)
-      const response = await fetch('http://192.168.0.3:3001/api/explore-schemes');
-      console.log('📡 API Response status:', response.status);
-      console.log('📡 API Response headers:', response.headers);
-      
-      if (!response.ok) {
-        throw new Error(`Failed to fetch schemes: ${response.status} ${response.statusText}`);
-      }
-      
-      const contentType = response.headers.get('content-type');
-      console.log('📡 Content-Type:', contentType);
-      
-      if (!contentType || !contentType.includes('application/json')) {
-        const text = await response.text();
-        console.log('📡 Received non-JSON response:', text);
-        throw new Error('Expected JSON response but received HTML');
-      }
-      
-      const data = await response.json();
-      console.log('� Received data:', data);
-      
-      if (data.success && data.data) {
-        setSchemes(data.data);
-      } else {
-        throw new Error(data.message || 'Failed to fetch schemes');
-      }
-    } catch (error) {
-      console.error('❌ Error fetching schemes:', error);
-      // Fallback to empty array if API fails
-      setSchemes([]);
     } finally {
       setLoading(false);
     }
@@ -362,6 +387,13 @@ const ExploreSchemes: React.FC = () => {
               <option value="education">Education</option>
             </select>
           </div>
+        </div>
+
+        {/* Results Count */}
+        <div className="mb-6 text-center">
+          <p className="text-lg text-gray-700">
+            Found <span className="font-bold text-green-600">{schemes.length}</span> government schemes
+          </p>
         </div>
 
         {/* Scheme Cards Grid */}
