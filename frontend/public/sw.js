@@ -1,4 +1,6 @@
-const CACHE_NAME = 'farmsphere-cache-v1';
+self.__WB_MANIFEST = [];
+
+const CACHE_NAME = 'farmsphere-cache-v3';
 const urlsToCache = [
   '/',
   '/index.html',
