@@ -578,6 +578,11 @@ export const translations = {
     // Login Page
     login: {
       loginQuote: "The farmer who once fed nation\nnow leads Tech-Agri Revolution.\nYour soil is your stock market.\nYour harvest is your profit empire.\nWelcome to World where your Fields print Profit. 🌾"
+    },
+    // Footer Ticker
+    ticker: {
+      news: "🌾 BREAKING: Telangana govt announces ₹4,000 bonus per acre for paddy farmers — Apply before March 31st at your nearest Rythu Seva Kendra",
+      profile: "🚀 1,000+ farmers across Telangana are already getting AI-powered crop recommendations, real-time mandi prices & exclusive government schemes — Complete your profile in 2 minutes. Your farm deserves it."
     }
   },
   
@@ -1167,6 +1172,11 @@ export const translations = {
     // Login Page
     login: {
       loginQuote: "जिस किसान ने देश को खिलाया,\nआज वही टेक-एग्री क्रांति का नेता बना।\nतुम्हारी मिट्टी तुम्हारा शेयर बाज़ार है।\nतुम्हारी फसल तुम्हारा मुनाफे का साम्राज्य है।\nस्वागत है उस दुनिया में — जहाँ तुम्हारा खेत मुनाफा छापता है। 🌾"
+    },
+    // Footer Ticker
+    ticker: {
+      news: "🌾 ब्रेकिंग: तेलंगाना सरकार ने धान किसानों को ₹4,000 प्रति एकड़ बोनस की घोषणा की — 31 मार्च से पहले नजदीकी रैतू सेवा केंद्र में आवेदन करें",
+      profile: "🚀 तेलंगाना के 1,000+ किसान पहले से ही AI फसल सिफारिशें, मंडी भाव और सरकारी योजनाएं पा रहे हैं — 2 मिनट में प्रोफ़ाइल पूरी करो। तुम्हारा खेत इसका हकदार है।"
     }
   },
   
@@ -1756,6 +1766,11 @@ export const translations = {
     // Login Page
     login: {
       loginQuote: "ఒకప్పుడు దేశాన్ని పోషించిన రైతు,\nఇప్పుడు టెక్-అగ్రి విప్లవానికి నాయకుడు.\nనీ మట్టి నీ స్టాక్ మార్కెట్.\nనీ పంట నీ లాభాల సామ్రాజ్యం.\nస్వాగతం ఆ ప్రపంచానికి — నీ పొలాలు లాభాలు ముద్రించే చోటుకి. 🌾"
+    },
+    // Footer Ticker
+    ticker: {
+      news: "🌾 బ్రేకింగ్: తెలంగాణ ప్రభుత్వం వరి రైతులకు ఎకరాకు ₹4,000 బోనస్ ప్రకటించింది — మార్చి 31 లోపు దగ్గరలోని రైతు సేవా కేంద్రంలో దరఖాస్తు చేసుకోండి",
+      profile: "🚀 తెలంగాణ అంతటా 1,000+ రైతులు ఇప్పటికే AI పంట సిఫార్సులు, మండీ ధరలు & ప్రభుత్వ పథకాలు పొందుతున్నారు — 2 నిమిషాల్లో ప్రొఫైల్ పూర్తి చేయండి. మీ పొలం దానికి అర్హమైనది."
     }
   }
 };

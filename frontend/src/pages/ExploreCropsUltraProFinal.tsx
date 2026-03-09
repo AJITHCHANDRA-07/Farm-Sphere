@@ -102,11 +102,12 @@ const DISTRICT_MAP: Record<string, string> = {
 };
 
 const ExploreCropsUltraProFinal = () => {
-  // � LOCATION DETECTION STATES
+  // 📍 LOCATION DETECTION STATES
   const [userLocation, setUserLocation] = useState<{ lat: number; lon: number } | null>(null);
   const [detectedDistrict, setDetectedDistrict] = useState<string>('');
   const [locationLoading, setLocationLoading] = useState<boolean>(true);
   const [locationError, setLocationError] = useState<string>('');
+  const [locationPermission, setLocationPermission] = useState<'granted' | 'denied' | 'prompt' | 'unknown'>('unknown');
   const [selectedDistrict, setSelectedDistrict] = useState<string>('all');
 
   // � STATE VARIABLES FOR DYNAMIC DATA
@@ -149,15 +150,27 @@ const ExploreCropsUltraProFinal = () => {
 
     if (!navigator.geolocation) {
       console.log('Geolocation not supported');
+      setLocationPermission('denied');
       return;
     }
 
+    // Check permission status first
+    navigator.permissions.query({ name: 'geolocation' }).then((result) => {
+      setLocationPermission(result.state as 'granted' | 'denied' | 'prompt');
+      
+      if (result.state === 'denied') {
+        setLocationLoading(false);
+        return;
+      }
+    });
+
     navigator.geolocation.getCurrentPosition(
       async (position) => {
+        setLocationPermission('granted');
         const { latitude, longitude } = position.coords;
       
         try {
-          const apiKey = import.meta.env.VITE_GOOGLE_MAPS_KEY;
+          const apiKey = 'AIzaSyAYUQV-Jc4iJAPcGV7sIwYq43LJEtmAtQs';
         
           const response = await fetch(
             `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}&language=en&result_type=administrative_area_level_2` 
@@ -215,6 +228,9 @@ const ExploreCropsUltraProFinal = () => {
       },
       (error) => {
         console.error('GPS error:', error);
+        if (error.code === error.PERMISSION_DENIED) {
+          setLocationPermission('denied');
+        }
       },
       {
         enableHighAccuracy: true,
@@ -837,10 +853,10 @@ const ExploreCropsUltraProFinal = () => {
             }
           }
           
-          // 🔹 ONLY USE FALLBACK IF ABSOLUTELY NO DISTRICT FOUND
+          // 🔹 NO FALLBACK - ONLY USE REAL DISTRICT DATA
           if (!cropDistrict || cropDistrict === 'Not specified' || cropDistrict === '') {
-            console.log(`⚠️ No district found for ${mainCropName}, using fallback`);
-            cropDistrict = 'Telangana';
+            console.log(`⚠️ No district found for ${mainCropName}, skipping crop`);
+            cropDistrict = '';
           } else {
             console.log(`✅ ${mainCropName} - Suitable Telangana District: "${cropDistrict}"`);
           }
@@ -984,9 +1000,11 @@ const ExploreCropsUltraProFinal = () => {
   // 🔹 LOAD CROPS AND DETECT LOCATION ON COMPONENT MOUNT
   useEffect(() => {
     console.log('🚀 Component mounted - starting location detection...');
-    fetchCropsFromDatabase();
+    if (locationPermission === 'granted' && detectedDistrict) {
+      fetchCropsFromDatabase();
+    }
     getUserLocation(); // 🚀 Start real location detection
-  }, []);
+  }, [locationPermission, detectedDistrict]);
 
   // 🔹 FORCE RE-RENDER WHEN DISTRICT IS DETECTED
   useEffect(() => {
@@ -1031,6 +1049,11 @@ const ExploreCropsUltraProFinal = () => {
         crop.description.toLowerCase().includes(searchLower) ||
         crop.district.toLowerCase().includes(searchLower)
       );
+    }
+
+    // 🔹 ONLY SHOW CROPS IF LOCATION IS GRANTED AND DISTRICT DETECTED
+    if (!detectedDistrict || detectedDistrict === '' || locationPermission !== 'granted') {
+      return []; // No crops without real location
     }
 
     if (detectedDistrict && detectedDistrict !== '') {
@@ -1149,8 +1172,8 @@ const ExploreCropsUltraProFinal = () => {
           </div>
         )}
 
-        {/* �🔹 SEARCH AND FILTER CONTROLS - ONLY SHOW AFTER LOCATION DETECTION */}
-        {!locationLoading && (
+        {/* 🔹 SEARCH AND FILTER CONTROLS - ONLY SHOW AFTER LOCATION DETECTION */}
+        {!locationLoading && locationPermission === 'granted' && detectedDistrict && (
         <div className="flex flex-col md:flex-row gap-4 mb-8">
           <div className="flex-1 relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
@@ -1201,7 +1224,7 @@ const ExploreCropsUltraProFinal = () => {
         )}
 
         {/* 🔹 CROP TABS - ONLY SHOW AFTER LOCATION DETECTION */}
-        {!locationLoading && (
+        {!locationLoading && locationPermission === 'granted' && detectedDistrict ? (
         <Tabs value={activeTab} onValueChange={(value: 'short' | 'medium' | 'long') => setActiveTab(value)} className="w-full">
           <TabsList className="grid w-full grid-cols-3 mb-8">
             <TabsTrigger value="short" className="flex items-center gap-2">
@@ -1268,11 +1291,27 @@ const ExploreCropsUltraProFinal = () => {
                 <div className="animate-spin rounded-full h-8 w-8 border-2 border-green-500 border-t-transparent mx-auto mb-2"></div>
                 <p className="text-gray-500">Detecting location to show crops for your district...</p>
               </div>
-            ) : !detectedDistrict ? (
+            ) : locationPermission === 'denied' ? (
               <div className="text-center py-8">
                 <MapPin className="mx-auto h-12 w-12 text-gray-400" />
-                <h3 className="mt-2 text-lg font-semibold text-gray-900">Waiting for location detection...</h3>
-                <p className="text-muted-foreground">Please allow location access to see crops for your district</p>
+                <h3 className="mt-2 text-lg font-semibold text-gray-900">📍 Location Access Required</h3>
+                <p className="text-muted-foreground mt-2">
+                  To view crops suited for your area, please enable location permission for FarmSphere in your browser or device settings and refresh the page.
+                </p>
+              </div>
+            ) : locationPermission === 'prompt' || locationPermission === 'unknown' ? (
+              <div className="text-center py-8">
+                <MapPin className="mx-auto h-12 w-12 text-gray-400" />
+                <h3 className="mt-2 text-lg font-semibold text-gray-900">📍 Allow Location Access to View Your Crops</h3>
+                <p className="text-muted-foreground mt-2 mb-4">
+                  FarmSphere uses your location to show crops that are most suitable and profitable for your exact area in Telangana.
+                </p>
+                <p className="text-muted-foreground mb-4">
+                  Please allow location permission to discover the right crops for your land.
+                </p>
+                <Button onClick={getUserLocation} className="bg-green-600 hover:bg-green-700">
+                  Allow Location
+                </Button>
               </div>
             ) : (
               <div className="text-center py-8">
@@ -1333,11 +1372,27 @@ const ExploreCropsUltraProFinal = () => {
                 <div className="animate-spin rounded-full h-8 w-8 border-2 border-blue-500 border-t-transparent mx-auto mb-2"></div>
                 <p className="text-gray-500">Detecting location to show crops for your district...</p>
               </div>
-            ) : !detectedDistrict ? (
+            ) : locationPermission === 'denied' ? (
               <div className="text-center py-8">
                 <MapPin className="mx-auto h-12 w-12 text-gray-400" />
-                <h3 className="mt-2 text-lg font-semibold text-gray-900">Waiting for location detection...</h3>
-                <p className="text-muted-foreground">Please allow location access to see crops for your district</p>
+                <h3 className="mt-2 text-lg font-semibold text-gray-900">📍 Location Access Required</h3>
+                <p className="text-muted-foreground mt-2">
+                  To view crops suited for your area, please enable location permission for FarmSphere in your browser or device settings and refresh the page.
+                </p>
+              </div>
+            ) : locationPermission === 'prompt' || locationPermission === 'unknown' ? (
+              <div className="text-center py-8">
+                <MapPin className="mx-auto h-12 w-12 text-gray-400" />
+                <h3 className="mt-2 text-lg font-semibold text-gray-900">📍 Allow Location Access to View Your Crops</h3>
+                <p className="text-muted-foreground mt-2 mb-4">
+                  FarmSphere uses your location to show crops that are most suitable and profitable for your exact area in Telangana.
+                </p>
+                <p className="text-muted-foreground mb-4">
+                  Please allow location permission to discover the right crops for your land.
+                </p>
+                <Button onClick={getUserLocation} className="bg-green-600 hover:bg-green-700">
+                  Allow Location
+                </Button>
               </div>
             ) : (
               <div className="text-center py-8">
@@ -1398,11 +1453,27 @@ const ExploreCropsUltraProFinal = () => {
                 <div className="animate-spin rounded-full h-8 w-8 border-2 border-purple-500 border-t-transparent mx-auto mb-2"></div>
                 <p className="text-gray-500">Detecting location to show crops for your district...</p>
               </div>
-            ) : !detectedDistrict ? (
+            ) : locationPermission === 'denied' ? (
               <div className="text-center py-8">
                 <MapPin className="mx-auto h-12 w-12 text-gray-400" />
-                <h3 className="mt-2 text-lg font-semibold text-gray-900">Waiting for location detection...</h3>
-                <p className="text-muted-foreground">Please allow location access to see crops for your district</p>
+                <h3 className="mt-2 text-lg font-semibold text-gray-900">📍 Location Access Required</h3>
+                <p className="text-muted-foreground mt-2">
+                  To view crops suited for your area, please enable location permission for FarmSphere in your browser or device settings and refresh the page.
+                </p>
+              </div>
+            ) : locationPermission === 'prompt' || locationPermission === 'unknown' ? (
+              <div className="text-center py-8">
+                <MapPin className="mx-auto h-12 w-12 text-gray-400" />
+                <h3 className="mt-2 text-lg font-semibold text-gray-900">📍 Allow Location Access to View Your Crops</h3>
+                <p className="text-muted-foreground mt-2 mb-4">
+                  FarmSphere uses your location to show crops that are most suitable and profitable for your exact area in Telangana.
+                </p>
+                <p className="text-muted-foreground mb-4">
+                  Please allow location permission to discover the right crops for your land.
+                </p>
+                <Button onClick={getUserLocation} className="bg-green-600 hover:bg-green-700">
+                  Allow Location
+                </Button>
               </div>
             ) : (
               <div className="text-center py-8">
@@ -1413,6 +1484,42 @@ const ExploreCropsUltraProFinal = () => {
             )}
           </TabsContent>
         </Tabs>
+        )}
+        
+        {/* 🔹 LOCATION PERMISSION PROMPT - SHOW WHEN NO PERMISSION */}
+        {!locationLoading && (!detectedDistrict || locationPermission !== 'granted') && (
+          <div className="text-center py-12">
+            <div className="max-w-md mx-auto">
+              <MapPin className="mx-auto h-16 w-16 text-gray-400 mb-4" />
+              <h3 className="text-xl font-semibold text-gray-900 mb-4">
+                📍 Allow Location Access to View Crops
+              </h3>
+              <div className="text-gray-600 mb-6 space-y-2">
+                <p>
+                  FarmSphere uses your location to show crops that are most suitable and profitable for your exact area in Telangana.
+                </p>
+                <p>
+                  Please allow location permission to discover the right crops for your land.
+                </p>
+              </div>
+              <div className="space-y-3">
+                {locationPermission === 'denied' ? (
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                    <p className="text-red-800 text-sm">
+                      📍 Location Access Required
+                    </p>
+                    <p className="text-red-600 text-sm mt-1">
+                      To view crops suited for your area, please enable location permission for FarmSphere in your browser or device settings and refresh the page.
+                    </p>
+                  </div>
+                ) : (
+                  <Button onClick={getUserLocation} className="bg-green-600 hover:bg-green-700 w-full">
+                    Allow Location Access
+                  </Button>
+                )}
+              </div>
+            </div>
+          </div>
         )}
 
         {/* 🔹 CROP DETAIL MODAL - UI STRUCTURE MAINTAINED */}
