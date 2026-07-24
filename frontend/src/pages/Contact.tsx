@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import emailjs from '@emailjs/browser';
 import { 
   Mail, 
   Phone, 
@@ -70,38 +71,44 @@ const Contact = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
-    
+    setSubmitError(false);
+  
     try {
-      // Create mailto link with form data
-      const subject = encodeURIComponent(`FarmSphere Contact: ${formData.subject}`);
-      const body = encodeURIComponent(
-        `Name: ${formData.name}\n` +
-        `Email: ${formData.email}\n` +
-        `Phone: ${formData.phone}\n\n` +
-        `Message:\n${formData.message}`
+      const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+      const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+      const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+
+      if (!serviceId || !templateId || !publicKey) {
+        throw new Error('EmailJS configuration missing. Please check environment variables.');
+      }
+
+      await emailjs.send(
+        serviceId,
+        templateId,
+        {
+          from_name: formData.name,
+          from_email: formData.email,
+          phone: formData.phone,
+          subject: formData.subject,
+          message: formData.message,
+        },
+        publicKey
       );
-      
-      window.location.href = `mailto:farmsphere@gmail.com?subject=${subject}&body=${body}`;
-      
-      // Show success message after a delay
-      setTimeout(() => {
-        setSubmitSuccess(true);
-        setSubmitting(false);
-        setFormData({
-          name: '',
-          email: '',
-          phone: '',
-          subject: '',
-          message: ''
-        });
-      }, 1000);
-      
-    } catch (error) {
-      console.error('Error submitting form:', error);
-      setSubmitError(true);
-      setSubmitting(false);
-    }
-  };
+    setSubmitSuccess(true);
+    setFormData({
+      name: '',
+      email: '',
+      phone: '',
+      subject: '',
+      message: ''
+    });
+  } catch (error) {
+    console.error('EmailJS error:', error);
+    setSubmitError(true);
+  } finally {
+    setSubmitting(false);
+  }
+};
 
   const contactInfo = [
     {

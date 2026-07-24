@@ -336,12 +336,16 @@ const GovernmentSchemesSection = () => {
                     <Button
                       variant="clean"
                       className="flex-1"
-                      onClick={() =>
-                        window.open(
-                          `/forms/${selectedScheme?.id}-application-form.pdf`,
-                          "_blank"
-                        )
-                      }
+                      onClick={() => {
+                        const formUrls: { [key: string]: string } = {
+                          'pm-kisan': 'https://pmkisan.gov.in/',
+                          'crop-insurance': 'https://pmfby.gov.in/',
+                          'dairy-loan': 'https://dahdf.nic.in/',
+                          'rural-housing': 'https://pmay.gov.in/'
+                        };
+                        const url = formUrls[selectedScheme?.id || ''] || 'https://www.india.gov.in/';
+                        window.open(url, "_blank");
+                      }}
                     >
                       Download Form
                     </Button>

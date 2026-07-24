@@ -85,7 +85,16 @@ const GovernmentSchemeModal = ({ isOpen, onClose, scheme }) => {
           </button>
           <button
             className="flex-1 bg-gray-200 text-foreground py-3 rounded-lg font-semibold hover:bg-gray-300 transition-colors"
-            onClick={() => window.open(`/forms/${scheme.id}-application-form.pdf`, "_blank")}
+            onClick={() => {
+              const formUrls: { [key: string]: string } = {
+                'pm-kisan': 'https://pmkisan.gov.in/',
+                'crop-insurance': 'https://pmfby.gov.in/',
+                'dairy-loan': 'https://dahdf.nic.in/',
+                'rural-housing': 'https://pmay.gov.in/'
+              };
+              const url = formUrls[scheme.id] || 'https://www.india.gov.in/';
+              window.open(url, "_blank");
+            }}
           >
             📥 Download Form
           </button>

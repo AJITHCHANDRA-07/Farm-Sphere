@@ -1011,7 +1011,7 @@ const EnhancedInvestments = () => {
             variant="outline" 
             size="sm" 
             className="flex-1 text-xs"
-            onClick={() => window.open('/business-plan-template.pdf', '_blank')}
+            onClick={() => window.open('https://www.msmeforum.in/business-plan-template', '_blank')}
           >
             📄 Business Plan
           </Button>
